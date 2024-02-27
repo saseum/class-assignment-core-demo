@@ -49,13 +49,13 @@ public class ClassAssignmentTest {
         Queue<Student> studentsQueue = new LinkedList<>(allStudents);
 
         int stdCount = studentsQueue.size();
-        int clsCount = 9;
+        int clsCount = 10;
 
         List<Integer> result = 학급인원편성(stdCount, clsCount);
 
         // 일단 자료구조를 이용해 학급편성 로직 설계해보기
         List<Student[]> classes = result.stream()
-                .map(size -> new Student[size])
+                .map(Student[]::new)
                 .collect(Collectors.toList());
 
         int idx = 0, direction = 1;
@@ -99,9 +99,22 @@ public class ClassAssignmentTest {
     @Test
     void assignClassByGenderTest() {
         List<Student> allStudents = studentMapper.selectAllStudents();
+        Collections.sort(allStudents, Comparator.comparingInt(Student::getRank));
 
         // TODO: 성별별은 남녀 두개로 쪼갠 후 두가지의 성적별 학급편성 로직 태우면 된다.
 
+        List<Student> maleStudents = new ArrayList<>();
+        List<Student> femaleStudents = new ArrayList<>();
+
+        allStudents.forEach(std -> {
+            if("M".equals(std.getGender())) maleStudents.add(std);
+            else femaleStudents.add(std);
+        });
+
+        // 남녀비율 맞춰서 clsCnt 달리하는 로직 필요. 현재는 고정상수 할당.
+
+        List<Student[]> maleClasses = 성적별학급편성(maleStudents, 5);
+        List<Student[]> femaleClasses = 성적별학급편성(femaleStudents, 5);
     }
 
     @DisplayName("학급 편성 테스트 - 성적별 + 계열별 편성")
@@ -132,6 +145,59 @@ public class ClassAssignmentTest {
         result.forEach(System.out::println);
     }
 
+    private List<Student[]> 성적별학급편성(List<Student> all, int clsCount) {
+        /*
+        List<Student> allStudents = studentMapper.selectAllStudents();
+        Collections.sort(allStudents, Comparator.comparingInt(Student::getRank));
+        */
+        Queue<Student> studentsQueue = new LinkedList<>(all);
+
+        int stdCount = studentsQueue.size();
+
+        List<Integer> result = 학급인원편성(stdCount, clsCount);
+
+        // 일단 자료구조를 이용해 학급편성 로직 설계해보기
+        List<Student[]> classes = result.stream()
+                .map(Student[]::new)
+                .collect(Collectors.toList());
+
+        int idx = 0, direction = 1;
+        while(!studentsQueue.isEmpty()) {
+            Student[] cls = classes.get(idx);
+
+            for(int i = 0; i < cls.length; i++) {
+                if(Objects.isNull(cls[i])) {
+                    cls[i] = studentsQueue.poll();
+                    break;
+                }
+            }
+
+            classes.set(idx, cls);
+
+            idx += direction;
+
+            if(idx == clsCount) {
+                direction = -1;
+                idx--;
+            } else if(idx < 0) {
+                direction = 1;
+                idx++;
+            }
+        }
+
+        for(int i = 0; i < classes.size(); i++) {
+            Student[] students = classes.get(i);
+
+            System.out.println("=== " + (i+1) + "반 (학급인원: "+ students.length +"명) ===");
+            for(int j = 0; j < students.length; j++) {
+                System.out.print("(" + students[j].getRank() + "등_" + students[j].getStudent_name() + "), ");
+            }
+            System.out.println();
+        }
+
+        return classes;
+    }
+
     /**
      * @param : 전체학생수, 편성할 학급수
      * */
@@ -153,5 +219,3 @@ public class ClassAssignmentTest {
         return classSizes;
     }
 }
-
-
