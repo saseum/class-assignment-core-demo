@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <typeAliases>
+        <typeAlias type="com.wkd.dev.entity.Record" alias="Record"/>
+        <typeAlias type="com.wkd.dev.entity.Student" alias="Student"/>
+        <typeAlias type="com.wkd.dev.entity.Subject" alias="Subject"/>
+        <typeAlias type="com.wkd.dev.entity.Class" alias="Class"/>
+        <typeAlias type="com.wkd.dev.entity.Subject" alias="Grade"/>
+
+        <typeAlias type="java.util.Map" alias="Map"/>
+        <typeAlias type="java.util.Set" alias="Set"/>
+        <typeAlias type="java.util.List" alias="List"/>
+    </typeAliases>
+</configuration>
+

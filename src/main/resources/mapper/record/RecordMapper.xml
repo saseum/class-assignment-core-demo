@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wkd.dev.mapper.RecordMapper">
+    <select id="selectAllRecords" resultType="Record">
+        SELECT *
+        FROM records
+    </select>
+
+    <insert id="insertRecord" parameterType="Record">
+        INSERT INTO records (school_number, sbj_name)
+        values (#{school_number}, #{sbj_name})
+    </insert>
+
+    <select id="getCountByContitionalGroup" parameterType="Map" resultType="int">
+        SELECT COUNT(z.school_number)
+        FROM (
+            SELECT r.school_number
+            FROM records r
+            WHERE r.sbj_name IN
+            <foreach item="sbj" collection="sbjGroup" open="(" separator="," close=")">
+                #{sbj}
+            </foreach>
+            GROUP BY r.school_number
+            HAVING COUNT(DISTINCT r.sbj_name) = #{count}
+                ) z
+    </select>
+
+    <select id="getStudentsByConditionalGroup" parameterType="Map" resultType="Student">
+        SELECT z.stu_name,
+               z.school_number,
+               z.gender
+            FROM (
+                SELECT s.stu_name, s.school_number, s.gender
+                FROM records r JOIN students s
+                ON r.school_number = s.school_number
+                WHERE r.sbj_name IN
+                <foreach item="sbj" collection="sbjGroup" open="(" separator="," close=")">
+                    #{sbj}
+                </foreach>
+                GROUP BY r.school_number
+                HAVING COUNT(DISTINCT r.sbj_name) = #{count}
+            ) z
+    </select>
+</mapper>
