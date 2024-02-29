@@ -84,6 +84,9 @@ class RecordMapperTest {
     @DisplayName("교과목 조합 그룹별 수강학생 목록 DB 조회 후 출력한다.")
     @Test
     void selectStudentsByContditionalSubjectGroup() {
+
+        double startTime = System.currentTimeMillis();
+
         String[] selectedSubjects = new String[] {"화법과 작문", "영미문학읽기", "한국지리", "사회문화", "물리학Ⅱ", "화학Ⅱ"};
 
         List<List<String>> combList = combinationSubsets(selectedSubjects.length, 3, selectedSubjects);
@@ -118,6 +121,11 @@ class RecordMapperTest {
                 System.out.println("\n==================================================================================");
             }
         }
+
+        double endTime = System.currentTimeMillis();
+
+        System.out.println("operation time = " + (endTime - startTime) / 1000 + "s");
+        // 0.1~0.2초 걸림
     }
 
     // nCm Combination Function

@@ -7,6 +7,9 @@
     <select id="selectAllStudents" resultType="Student">
         SELECT *
         FROM students
+        <if test="orderBy == 'rank'">
+            ORDER BY rank <if test="direction == 'desc'">DESC</if>
+        </if>
     </select>
 
     <select id="selectAllStudentsCount" resultType="int">

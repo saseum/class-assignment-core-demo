@@ -45,7 +45,7 @@ public class ClassAssignmentTest {
     @Test
     void assignClassByScoreTest() {
         List<Student> allStudents = studentMapper.selectAllStudents();
-        Collections.sort(allStudents, Comparator.comparingInt(Student::getRank));
+        //Collections.sort(allStudents, Comparator.comparingInt(Student::getRank));
         Queue<Student> studentsQueue = new LinkedList<>(allStudents);
 
         int stdCount = studentsQueue.size();
@@ -182,6 +182,9 @@ public class ClassAssignmentTest {
     @DisplayName("(성별 + 계열) 기준 학급당 인원 편성 및 성적순 학급편성 테스트")
     @Test
     void 학급당인원편성테스트_성별계열기준() {
+
+        long startTime = System.currentTimeMillis();
+
         List<Student> allStudents = studentMapper.selectAllStudents();
         Collections.sort(allStudents, Comparator.comparingInt(Student::getRank));   // 성적순 오름차순
 
@@ -252,6 +255,11 @@ public class ClassAssignmentTest {
         System.out.println("남자이과반 수 = " + 남자이과.size());
         System.out.println("여자문과반 수 = " + 여자문과.size());
         System.out.println("여자이과반 수 = " + 여자이과.size());
+
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("operation time = " + ((double)endTime - startTime)/1000 + "s");
+        // 0.088초. 즉 0.1초가량 걸림.
     }
 
     private void printStudents(Student[] stds) {
